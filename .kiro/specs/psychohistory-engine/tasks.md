@@ -171,23 +171,23 @@ Plan de implementacion incremental del Psychohistory Engine en Python 3.11+. El 
 - [x] 14. Checkpoint - Verificar subsistemas nucleares integrados
   - Asegurar que todos los tests pasen, consultar al usuario si surgen dudas.
 
-- [-] 15. Implementar Data_Connectors y Extraction_Pipeline
-  - [ ] 15.1 Implementar `psychohistory/connectors/base.py` con la clase abstracta `DataConnector`
+- [x] 15. Implementar Data_Connectors y Extraction_Pipeline
+  - [x] 15.1 Implementar `psychohistory/connectors/base.py` con la clase abstracta `DataConnector`
     - Metodos abstractos: `search(query)`, `fetch(identifier)`
     - Metodo `_handle_rate_limit(retry_after)`: pausa exactamente `retry_after` segundos ante HTTP 429
     - Metodo `_handle_timeout()`: registra fallo con timestamp y numero de reintentos; lanza `ConnectorTimeoutError`
     - Politica de reintentos con backoff exponencial (1s, 2s, 4s, maximo 3 reintentos) para errores de red transitorios
     - _Requisitos: 10.7, 10.8_
-  - [ ] 15.2 Implementar `psychohistory/connectors/wikipedia.py` con `WikipediaConnector`
+  - [x] 15.2 Implementar `psychohistory/connectors/wikipedia.py` con `WikipediaConnector`
     - Busqueda por titulo, categoria y texto libre via MediaWiki REST API (`https://en.wikipedia.org/w/api.php`)
     - Timeout de 30 segundos; manejo de HTTP 429 con cabecera `Retry-After`
     - Mapeo de respuesta a `RawSourceDocument` con `connector_name="wikipedia"` y `extraction_timestamp`
     - _Requisitos: 10.1, 10.7, 10.8_
-  - [ ] 15.3 Implementar `psychohistory/connectors/archiveorg.py` con `ArchiveOrgConnector`
+  - [x] 15.3 Implementar `psychohistory/connectors/archiveorg.py` con `ArchiveOrgConnector`
     - Busqueda por coleccion, rango de fechas y texto libre via biblioteca `internetarchive`
     - Mapeo de resultado a `RawSourceDocument` con `connector_name="archiveorg"` y `extraction_timestamp`
     - _Requisitos: 10.2, 10.7, 10.8_
-  - [ ] 15.4 Implementar `psychohistory/extraction_pipeline.py` con la clase `ExtractionPipeline`
+  - [x] 15.4 Implementar `psychohistory/extraction_pipeline.py` con la clase `ExtractionPipeline`
     - Metodo `run(connector, query)`: recupera documentos; persiste `RawSourceDocument` sin modificar; transforma via spaCy NER; deduplica; ingesta en Corpus; retorna `ExtractionReport`
     - Metodo `_transform(doc)`: usa spaCy `en_core_web_trf` para extraer DATE/TIME -> `date`, GPE/LOC -> `location`, PERSON/ORG/NORP -> `actors`
     - Metodo `_deduplicate(events)`: hash SHA-256 de `(date, description)` normalizado; filtra duplicados existentes en Corpus
@@ -206,11 +206,11 @@ Plan de implementacion incremental del Psychohistory Engine en Python 3.11+. El 
     - **Propiedad 23: Deduplicacion temporal en extracciones incrementales**
     - **Valida: Requisito 10.11**
 
-- [~] 16. Checkpoint - Verificar pipeline de extraccion
+- [x] 16. Checkpoint - Verificar pipeline de extraccion
   - Asegurar que todos los tests pasen, consultar al usuario si surgen dudas.
 
-- [~] 17. Implementar Psychohistory_Engine (orquestador) y API publica
-  - [ ] 17.1 Implementar `psychohistory/engine.py` con la clase `PsychohistoryEngine`
+- [x] 17. Implementar Psychohistory_Engine (orquestador) y API publica
+  - [x] 17.1 Implementar `psychohistory/engine.py` con la clase `PsychohistoryEngine`
     - Metodo `ingest_events(events, format)`: delega a `EventIngester.ingest_batch()`; retorna `IngestionReport`
     - Metodo `predict(horizon_years, params)`: verifica corpus >= 1000; obtiene patrones activos; delega a `TrajectoryPredictor`; detecta crisis via `InterventionDetector`; retorna `PredictionResult`
     - Metodo `query_corpus(filters)`: delega a `CorpusRepository.query()`; retorna lista vacia con mensaje si no hay resultados; valida formato de filtros
@@ -222,18 +222,18 @@ Plan de implementacion incremental del Psychohistory Engine en Python 3.11+. El 
     - Advertencia al usuario cuando `sigma_state < 0.05` en solicitudes de prediccion
     - _Requisitos: 1.1, 3.3, 6.5, 6.6, 7.1, 7.2, 7.3, 7.4, 7.5, 8.1, 8.2, 8.4, 9.2, 9.4, 10.10_
 
-- [~] 18. Conectar todos los subsistemas e integracion final
-  - [ ] 18.1 Cablear `PsychohistoryEngine` con todos los subsistemas
+- [x] 18. Conectar todos los subsistemas e integracion final
+  - [x] 18.1 Cablear `PsychohistoryEngine` con todos los subsistemas
     - Inyeccion de dependencias: `EventIngester`, `PatternAnalyzer`, `TrajectoryPredictor`, `InterventionDetector`, `QuantumEngine`, `ExtractionPipeline`, `CorpusRepository`, `ExplainabilityReporter`
     - Flujo completo: ingesta -> analisis de patrones -> prediccion cuantica -> deteccion de crisis -> explicabilidad
     - Invalidacion automatica de trayectorias al actualizar el Corpus (variacion > 0.05 en `Confidence_Score`)
     - _Requisitos: 2.5, 3.6, 5.1_
-  - [ ]* 18.2 Escribir tests de integracion del pipeline completo
+  - [x]* 18.2 Escribir tests de integracion del pipeline completo
     - Test end-to-end: ingesta de corpus sintetico -> analisis -> prediccion -> deteccion de crisis -> exportacion/importacion de estado
     - Verificar que el flujo completo produce resultados deterministas con la misma semilla
     - _Requisitos: 3.7, 8.3_
 
-- [~] 19. Checkpoint final - Verificar integracion completa
+- [x] 19. Checkpoint final - Verificar integracion completa
   - Asegurar que todos los tests pasen, consultar al usuario si surgen dudas.
 
 ## Notas
